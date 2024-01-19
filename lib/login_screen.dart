@@ -1,3 +1,4 @@
+import 'package:firebaselogin/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -24,6 +25,11 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _password,
       );
       print("User Logged In: ${userCredential.user!.email}");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Welcome(),
+          ));
     } catch (e) {
       print("Error During Logged In: $e");
     }
@@ -89,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      _handleLogin ();
+                      _handleLogin();
                     }
                   },
                   child: const Text("Login"),
