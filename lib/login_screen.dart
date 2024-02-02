@@ -1,7 +1,8 @@
-import 'package:firebaselogin/auth_provider.dart'
-    as MyAuthProvider; // Alias for your custom AuthProvider
+import 'package:firebaselogin/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'auth_provider.dart' as MyAppAuthProvider;
+import 'welcome.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -12,16 +13,11 @@ class LoginScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Login"),
       ),
-      body: Consumer<MyAuthProvider.AuthProvider>(
-        builder: (context, authProvider, child) {
-          // Build your login UI here using authProvider
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: LoginForm(),
-            ),
-          );
-        },
+      body: const Center(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: LoginForm(),
+        ),
       ),
     );
   }
@@ -39,28 +35,35 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
 
-  void _handleLogin(BuildContext context) async {
-    // Get your AuthProvider instance using Provider
-    final MyAuthProvider.AuthProvider authProvider =
-        Provider.of<MyAuthProvider.AuthProvider>(context, listen: false);
+  void _handleSignIn(BuildContext context) async {
+    final MyAppAuthProvider.AuthProvider authProvider =
+        Provider.of<MyAppAuthProvider.AuthProvider>(context, listen: false);
 
     try {
-      await authProvider.signUpWithEmailAndPassword(
+      await authProvider.signInWithEmailAndPassword(
         _emailController.text,
         _passController.text,
       );
-      // Successfully logged in, you can navigate to another screen
+
+      // Navigate to the welcome screen after successful login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Welcome(),
+        ),
+      );
     } catch (e) {
-      // Handle login failure
-      print("Error During Login: $e");
+      print("Error during sign in: $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Form(
-        key: _formKey,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
@@ -85,7 +88,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return "Please Enter Your Password";
+                return "Please enter your password";
               }
               return null;
             },
@@ -93,11 +96,25 @@ class _LoginFormState extends State<LoginForm> {
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                _handleLogin(context);
+                _handleSignIn(context);
               }
             },
-            child: const Text("Login"),
-          )
-        ]));
+            child: const Text("Sign In"),
+          ),
+          const SizedBox(height: 20),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SignUpScreen(),
+                ),
+              );
+            },
+            child: const Text("Don't have an account? Sign Up"),
+          ),
+        ],
+      ),
+    );
   }
 }

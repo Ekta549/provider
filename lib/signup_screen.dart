@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebaselogin/auth_provider.dart' as MyAuthProvider;
 import 'package:provider/provider.dart';
-import 'welcome.dart';
+import 'login_screen.dart'; // Import your LoginScreen class
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -44,11 +44,12 @@ class _SignUpFormState extends State<SignUpForm> {
         _emailController.text,
         _passController.text,
       );
-      // Successfully signed up, you can navigate to another screen
-      Navigator.push(
+
+      // Successfully signed up, navigate to the login screen
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const Welcome(),
+          builder: (context) => LoginScreen(),
         ),
       );
     } catch (e) {
@@ -60,45 +61,46 @@ class _SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-        key: _formKey,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          TextFormField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: "Email",
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Please enter your email";
-              }
-              return null;
-            },
+      key: _formKey,
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        TextFormField(
+          controller: _emailController,
+          keyboardType: TextInputType.emailAddress,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: "Email",
           ),
-          const SizedBox(height: 20),
-          TextFormField(
-            controller: _passController,
-            obscureText: true,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: "Password",
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Please Enter Your Password";
-              }
-              return null;
-            },
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Please enter your email";
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 20),
+        TextFormField(
+          controller: _passController,
+          obscureText: true,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: "Password",
           ),
-          ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _handleSignUp(context);
-              }
-            },
-            child: const Text("Sign Up"),
-          )
-        ]));
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Please Enter Your Password";
+            }
+            return null;
+          },
+        ),
+        ElevatedButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              _handleSignUp(context);
+            }
+          },
+          child: const Text("Sign Up"),
+        )
+      ]),
+    );
   }
 }

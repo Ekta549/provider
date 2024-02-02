@@ -1,9 +1,7 @@
 import 'package:firebaselogin/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// ignore: library_prefixes
-import 'package:firebaselogin/auth_provider.dart'
-    as MyAppAuthProvider; // Use a different prefix
+import 'auth_provider.dart' as MyAppAuthProvider;
 
 class Welcome extends StatelessWidget {
   const Welcome({Key? key}) : super(key: key);
@@ -32,7 +30,7 @@ class Welcome extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   context.read<MyAppAuthProvider.AuthProvider>().signOut();
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const LoginScreen(),

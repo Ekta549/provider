@@ -3,33 +3,50 @@ import 'package:flutter/material.dart';
 
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  User? _user; // Declare _user as an instance variable
+  User? _user;
 
-  // Getter for current user
   User? get currentUser => _auth.currentUser;
 
-  // Getter for _user
   User? get user => _user;
+
   Future<void> signUpWithEmailAndPassword(String email, String password) async {
     try {
       final result = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      // Add print statements for debugging
-      print("User signed up successfully: ${result.user?.email}");
+
+      _user = result.user;
+      notifyListeners();
     } catch (e) {
-      // Add print statements for debugging
       print("Error during sign up: $e");
       rethrow;
     }
   }
 
-  Future<void> signOut() async {
-    await _auth.signOut();
+  Future<void> signInWithEmailAndPassword(String email, String password) async {
+    try {
+      final result = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    // Reset _user and notify listeners
-    _user = null;
-    notifyListeners();
+      _user = result.user;
+      notifyListeners();
+    } catch (e) {
+      print("Error during sign in: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> signOut() async {
+    try {
+      await _auth.signOut();
+      _user = null;
+      notifyListeners();
+    } catch (e) {
+      print("Error during sign out: $e");
+      rethrow;
+    }
   }
 }
